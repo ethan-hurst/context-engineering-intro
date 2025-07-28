@@ -8,6 +8,19 @@ Implement a feature using the PRP file with robust error handling and validation
 
 ### 1. **Pre-Execution Validation**
 
+- **Environment Health Check:**
+  ```bash
+  # Check git status and working directory
+  git status --porcelain | wc -l  # Should be 0 for clean start
+  
+  # Check disk space (need at least 1GB free)
+  df -h . | awk 'NR==2 {print $4}' 
+  
+  # Verify required tools are available
+  command -v python3 >/dev/null || echo "Python3 not found"
+  command -v git >/dev/null || echo "Git not found"
+  ```
+
 - Verify PRP file exists at specified path
 - Check if PRP is already implemented (check PRP-STATUS.md)
 - **CRITICAL: Even if marked as implemented, verify against current standards:**
@@ -21,7 +34,14 @@ Implement a feature using the PRP file with robust error handling and validation
   - PRPs/IMPLEMENTATION-STANDARD.md
   - COMPLETE-IMPLEMENTATION-GUIDE.md
   - PRPs/PRP-STATUS.md
-- Create a rollback checkpoint (git stash or branch)
+- **Enhanced Rollback Strategy:**
+  ```bash
+  # Create timestamped checkpoint
+  CHECKPOINT="prp-checkpoint-$(date +%Y%m%d-%H%M%S)"
+  git branch $CHECKPOINT
+  git stash push -m "Pre-PRP implementation state"
+  echo $CHECKPOINT > .prp-checkpoint
+  ```
 
 ### 2. **Load and Analyze PRP**
 
@@ -153,31 +173,131 @@ grep -r "delay\(" --include="*.ts" --include="*.tsx" || true
 
 ### 6. **Error Recovery**
 
+**Enhanced Error Recovery Framework:**
+
 If validation fails at any level:
 
-- Identify the specific failure
-- Use error patterns from PRP to fix
-- Re-run the failed validation level
-- If unable to fix after 3 attempts:
-  - Document the issue
-  - Consider rollback to checkpoint
-  - Request user assistance
+- **Immediate Assessment:**
+  ```bash
+  # Capture error context
+  echo "Error occurred at: $(date)" >> .prp-error-log
+  git diff --name-only >> .prp-error-log
+  git status --porcelain >> .prp-error-log
+  ```
+
+- **Categorized Recovery Strategies:**
+  
+  **Syntax/Build Errors:**
+  - Run syntax checker: `python -m py_compile file.py`
+  - Check imports: `python -c "import module_name"`
+  - Validate JSON/YAML: `python -m json.tool file.json`
+  
+  **Test Failures:**
+  - Isolate failing test: `pytest -xvs specific_test.py::test_function`
+  - Run with debugging: `pytest --pdb specific_test.py`
+  - Check test data: Verify fixtures and mock data
+  
+  **Integration Issues:**
+  - Check service health: `curl -f http://localhost:port/health`
+  - Validate database connection: Run connection test
+  - Check API keys: Verify environment variables
+  
+  **Performance Issues:**
+  - Profile the code: `python -m cProfile script.py`
+  - Check memory usage: `python -m memory_profiler script.py`
+  - Monitor system resources: `top` or `htop`
+
+- **Automated Recovery Actions:**
+  - Use error patterns from PRP to fix
+  - Apply common fixes (missing imports, typos, etc.)
+  - Re-run the failed validation level
+  - If unable to fix after 3 attempts:
+    ```bash
+    # Create detailed error report
+    echo "Failed after 3 attempts" >> .prp-error-log
+    git log --oneline -5 >> .prp-error-log
+    # Rollback to checkpoint
+    CHECKPOINT=$(cat .prp-checkpoint 2>/dev/null || echo "main")
+    git checkout $CHECKPOINT
+    git stash pop
+    ```
+  - Document the issue with context
+  - Request user assistance with specific error details
 
 ### 7. **Quality Assurance**
 
-- Security checks:
-  - RLS policies implemented and tested
-  - No exposed service role keys
-  - Input validation on all forms
-  - SQL injection prevention
-- Performance verification:
-  - Debouncing on search/filters
-  - Pagination for large datasets
+**Enhanced Quality Framework:**
+
+- **Security Audit:**
+  ```bash
+  # Check for secrets in code
+  grep -r "api_key\|password\|token\|secret" --include="*.py" --include="*.js" . | grep -v ".env.example"
+  
+  # Scan for SQL injection risks
+  grep -r "f\".*SELECT\|\.format.*SELECT" --include="*.py" .
+  
+  # Check for hardcoded URLs/IPs
+  grep -r "http://\|https://\|[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}" --include="*.py" .
+  
+  # Validate input sanitization
+  grep -r "request\.\|input\(\)" --include="*.py" . | grep -v "sanitize\|validate"
+  ```
+
+- **Performance Verification:**
+  - **Load Testing:**
+    ```bash
+    # API endpoint performance
+    curl -w "@curl-format.txt" -o /dev/null -s "http://localhost:8000/api/endpoint"
+    
+    # Database query performance
+    python -c "import time; start=time.time(); run_query(); print(f'Query time: {time.time()-start:.3f}s')"
+    ```
+  - Debouncing on search/filters (minimum 300ms delay)
+  - Pagination for large datasets (max 100 items per page)
   - Optimistic updates where appropriate
-- Accessibility review:
-  - Proper ARIA labels
-  - Keyboard navigation
-  - Screen reader compatibility
+  - **Memory Profiling:**
+    ```bash
+    python -m memory_profiler your_script.py
+    ```
+
+- **Accessibility Review:**
+  - Proper ARIA labels on interactive elements
+  - Keyboard navigation (Tab, Enter, Esc support)
+  - Screen reader compatibility (semantic HTML)
+  - Color contrast ratios (minimum 4.5:1)
+  - **Automated Accessibility Testing:**
+    ```bash
+    # If using web technologies
+    npm install -g axe-cli
+    axe http://localhost:3000 --tags wcag2a,wcag2aa
+    ```
+
+- **Code Quality Metrics:**
+  ```bash
+  # Complexity analysis
+  python -m radon cc . --show-complexity
+  
+  # Test coverage
+  python -m pytest --cov=. --cov-report=term-missing
+  
+  # Code duplication detection
+  python -m pyflakes .
+  
+  # Documentation coverage
+  python -m pydocstyle .
+  ```
+
+- **Dependency Security:**
+  ```bash
+  # Check for known vulnerabilities
+  python -m safety check
+  
+  # Audit npm packages (if applicable)
+  npm audit
+  
+  # Check for outdated dependencies
+  pip list --outdated
+  ```
 
 ### 8. **Complete Implementation**
 
