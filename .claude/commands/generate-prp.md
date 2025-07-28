@@ -9,17 +9,40 @@ Generate a complete, self-sufficient PRP (Product Requirements Plan) for feature
 1. **Input Validation**
    - Verify feature file exists at specified path
    - Validate feature file format and required sections
+   - **Feature Completeness Check:**
+     ```bash
+     # Ensure all required sections present
+     grep -q "## FEATURE:" "$FEATURE_FILE" || echo "Missing FEATURE section"
+     grep -q "## EXAMPLES:" "$FEATURE_FILE" || echo "Missing EXAMPLES section"  
+     grep -q "## DOCUMENTATION:" "$FEATURE_FILE" || echo "Missing DOCUMENTATION section"
+     ```
    - Check for feature name conflicts in existing PRPs
    - Ensure no duplicate PRP numbers
 
 2. **Dependency Analysis**
    - Review PRP-STATUS.md for required dependencies
+   - **Dependency Impact Assessment:**
+     ```bash
+     # Check for circular dependencies
+     grep -r "depends.*$(basename $FEATURE_FILE)" PRPs/ || echo "No circular deps"
+     
+     # Validate prerequisite completion
+     awk '/^-.*📄.*Documented/ {print $2}' PRPs/PRP-STATUS.md
+     ```
    - Identify prerequisite PRPs that must be implemented first
    - Map integration points with existing features
 
 3. **Context Gathering**
    - Read IMPLEMENTATION-STANDARD.md for requirements
    - Read COMPLETE-IMPLEMENTATION-GUIDE.md for patterns
+   - **Codebase Health Check:**
+     ```bash
+     # Check for broken patterns to avoid
+     find . -name "*.py" -exec python -m py_compile {} \; 2>/dev/null || echo "Syntax errors found"
+     
+     # Identify technical debt
+     grep -r "TODO\|FIXME\|HACK" --include="*.py" . | wc -l
+     ```
    - Analyze project structure and conventions
 
 ## Research Process
@@ -183,21 +206,86 @@ Before writing the PRP, perform deep analysis:
    - Can an AI implement this with ONLY the PRP content?
    - Are all external references included with URLs?
    - Are code patterns explicitly shown?
+   - **Context Sufficiency Test:**
+     ```python
+     # Mental exercise: Could someone with no project knowledge
+     # implement this feature using only the PRP content?
+     required_context = [
+         "API documentation links",
+         "Code pattern examples", 
+         "Error handling strategies",
+         "Testing approaches",
+         "Integration requirements"
+     ]
+     ```
 
-2. **Risk Assessment**
-   - What could go wrong during implementation?
-   - What error cases need handling?
-   - What performance issues might arise?
+2. **Risk Assessment Framework**
+   - **Technical Risks:**
+     ```yaml
+     scalability: "Will this work with 10x current load?"
+     performance: "Response time < 200ms under normal load?"
+     reliability: "99.9% uptime achievable?"
+     security: "No data exposure or injection vulnerabilities?"
+     maintenance: "Can team maintain this long-term?"
+     ```
+   - **Implementation Risks:**
+     - What could go wrong during implementation?
+     - What error cases need handling?
+     - What performance issues might arise?
+     - What breaking changes might be introduced?
+   - **Business Risks:**
+     - Impact on existing users
+     - Resource requirements
+     - Timeline constraints
+     - Rollback complexity
 
 3. **Integration Planning**
    - How does this affect existing features?
    - What migrations are needed?
    - What backwards compatibility concerns exist?
+   - **Impact Analysis:**
+     ```bash
+     # Find files that might be affected
+     grep -r "similar_function_name" --include="*.py" .
+     
+     # Check for API contract changes
+     grep -r "class.*API\|def.*endpoint" --include="*.py" .
+     ```
 
 4. **Quality Gates**
    - Are validation commands actually executable?
    - Do success criteria cover all requirements?
    - Are test scenarios comprehensive?
+   - **Validation Completeness:**
+     ```yaml
+     unit_tests: "Cover all new functions/classes?"
+     integration_tests: "Test all external integrations?"
+     performance_tests: "Validate response times?"
+     security_tests: "Check for vulnerabilities?"
+     accessibility_tests: "Meet WCAG standards?"
+     ```
+
+5. **Stakeholder Validation**
+   - **Requirements Verification:**
+     - Are business requirements clearly defined?
+     - Are technical constraints documented?
+     - Are acceptance criteria measurable?
+   - **Resource Planning:**
+     - Estimated implementation time
+     - Required expertise/skills
+     - Infrastructure needs
+     - Third-party service costs
+
+6. **Technical Debt Assessment**
+   - **Debt Introduction Risk:**
+     ```bash
+     # Estimate complexity addition
+     find . -name "*.py" -exec wc -l {} + | tail -1
+     # New lines of code should be < 20% of existing
+     ```
+   - Will this feature introduce maintenance burden?
+   - Are there simpler alternatives?
+   - How does this align with architecture principles?
 
 ## Output Generation
 

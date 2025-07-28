@@ -68,18 +68,25 @@ Context Engineering represents a paradigm shift from traditional prompt engineer
 context-engineering-intro/
 ├── .claude/
 │   ├── commands/
-│   │   ├── generate-prp.md    # Generates comprehensive PRPs
-│   │   └── execute-prp.md     # Executes PRPs to implement features
-│   └── settings.local.json    # Claude Code permissions
+│   │   ├── generate-prp.md         # Enhanced: Generates comprehensive PRPs with risk assessment
+│   │   ├── execute-prp.md          # Enhanced: Executes PRPs with robust error recovery
+│   │   ├── review-prp.md           # NEW: PRP quality review and improvement
+│   │   ├── validate-code.md        # NEW: Comprehensive code validation
+│   │   ├── debug-implementation.md # NEW: Systematic debugging framework
+│   │   ├── security-audit.md       # NEW: Complete security assessment
+│   │   ├── performance-optimize.md # NEW: Performance analysis and optimization
+│   │   ├── refactor-legacy.md      # NEW: Legacy code modernization
+│   │   └── README.md              # Command documentation and usage guide
+│   └── settings.local.json        # Enhanced: Claude Code permissions for new tools
 ├── PRPs/
 │   ├── templates/
-│   │   └── prp_base.md       # Base template for PRPs
-│   └── EXAMPLE_multi_agent_prp.md  # Example of a complete PRP
-├── examples/                  # Your code examples (critical!)
-├── CLAUDE.md                 # Global rules for AI assistant
-├── INITIAL.md               # Template for feature requests
-├── INITIAL_EXAMPLE.md       # Example feature request
-└── README.md                # This file
+│   │   └── prp_base.md            # Base template for PRPs
+│   └── EXAMPLE_multi_agent_prp.md # Example of a complete PRP
+├── examples/                       # Your code examples (critical!)
+├── CLAUDE.md                      # Enhanced: Global rules with advanced error prevention
+├── INITIAL.md                     # Template for feature requests
+├── INITIAL_EXAMPLE.md             # Example feature request
+└── README.md                      # This file
 ```
 
 This template doesn't focus on RAG and tools with context engineering because I have a LOT more in store for that soon. ;)
@@ -126,19 +133,57 @@ PRPs (Product Requirements Prompts) are comprehensive implementation blueprints 
 - Implementation steps with validation
 - Error handling patterns
 - Test requirements
-
-They are similar to PRDs (Product Requirements Documents) but are crafted more specifically to instruct an AI coding assistant.
+- **NEW: Risk assessment and mitigation strategies**
+- **NEW: Security and performance requirements**
+- **NEW: Quality gates and validation commands**
 
 Run in Claude Code:
 ```bash
 /generate-prp INITIAL.md
 ```
 
-**Note:** The slash commands are custom commands defined in `.claude/commands/`. You can view their implementation:
-- `.claude/commands/generate-prp.md` - See how it researches and creates PRPs
-- `.claude/commands/execute-prp.md` - See how it implements features from PRPs
+**Enhanced Features:**
+- **Requirement Validation**: Ensures all requirements are complete and measurable
+- **Risk Assessment**: Identifies and mitigates implementation risks
+- **Context Sufficiency**: Validates that all necessary context is included
+- **Technical Debt Assessment**: Considers impact on existing codebase
 
-The `$ARGUMENTS` variable in these commands receives whatever you pass after the command name (e.g., `INITIAL.md` or `PRPs/your-feature.md`).
+## Advanced Command Suite (NEW)
+
+This template now includes a comprehensive suite of specialized commands for bulletproof development:
+
+### Quality Assurance Commands
+```bash
+# Review and improve PRP quality
+/review-prp PRPs/your-feature.md
+
+# Comprehensive code validation
+/validate-code src/
+
+# Systematic debugging
+/debug-implementation "issue description"
+```
+
+### Security & Performance Commands
+```bash
+# Complete security audit
+/security-audit src/
+
+# Performance analysis and optimization
+/performance-optimize src/module.py
+
+# Legacy code modernization
+/refactor-legacy legacy_code.py
+```
+
+### Key Benefits
+- **Error Prevention**: Advanced validation and rollback strategies
+- **Security First**: Comprehensive security scanning and compliance checking
+- **Performance Optimization**: Multi-dimensional performance analysis
+- **Quality Assurance**: Automated testing and code quality validation
+- **Legacy Modernization**: Systematic approach to technical debt reduction
+
+See `.claude/commands/README.md` for detailed command documentation.
 
 This command will:
 1. Read your feature request
@@ -154,12 +199,21 @@ Once generated, execute the PRP to implement your feature:
 /execute-prp PRPs/your-feature-name.md
 ```
 
-The AI coding assistant will:
-1. Read all context from the PRP
-2. Create a detailed implementation plan
-3. Execute each step with validation
-4. Run tests and fix any issues
-5. Ensure all success criteria are met
+**Enhanced AI coding assistant will:**
+1. **Pre-execution Validation**: Environment health checks and dependency validation
+2. **Load Context**: Read all context from the PRP with enhanced analysis
+3. **Create Implementation Plan**: Detailed task breakdown with risk mitigation
+4. **Execute with Safety**: Step-by-step implementation with continuous validation
+5. **Enhanced Error Recovery**: Categorized error handling with automated fixes
+6. **Quality Assurance**: Multi-level validation including security and performance
+7. **Complete Documentation**: Comprehensive reporting and knowledge transfer
+
+**NEW Quality Features:**
+- **Environment Health Checks**: Validates system readiness before starting
+- **Enhanced Rollback Strategy**: Timestamped checkpoints for safe recovery
+- **Real-time Validation**: Continuous quality checks during implementation
+- **Security Integration**: Built-in security scanning and validation
+- **Performance Monitoring**: Tracks performance impact during development
 
 ## Writing Effective INITIAL.md Files
 

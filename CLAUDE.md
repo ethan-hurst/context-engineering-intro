@@ -57,3 +57,50 @@
 - **Never hallucinate libraries or functions** – only use known, verified Python packages.
 - **Always confirm file paths and module names** exist before referencing them in code or tests.
 - **Never delete or overwrite existing code** unless explicitly instructed to or if part of a task from `TASK.md`.
+
+### 🛡️ Error Prevention & Recovery
+- **Pre-flight Checks**: Always validate environment, dependencies, and file structure before starting
+- **Incremental Validation**: Run tests and lints after each significant change, not just at the end
+- **Rollback Strategy**: Create git checkpoints before major changes; know how to revert cleanly
+- **Defensive Coding**: Anticipate edge cases, validate inputs, handle exceptions gracefully
+- **Resource Management**: Check disk space, memory usage, and API rate limits before intensive operations
+
+### 🔍 Debugging Protocol
+- **Systematic Approach**: When errors occur, follow this order:
+  1. Read the full error message and stack trace
+  2. Identify the exact line and operation that failed
+  3. Check for typos, missing imports, or syntax errors
+  4. Validate data types and variable states at the failure point
+  5. Test with minimal reproducible examples
+- **Logging Strategy**: Use appropriate log levels (DEBUG, INFO, WARN, ERROR) with context
+- **Tool Usage**: Leverage debuggers, profilers, and static analysis tools
+- **Documentation**: When debugging complex issues, document the root cause and solution
+
+### 🔒 Security First
+- **Input Validation**: Always sanitize and validate user inputs and external data
+- **Secret Management**: Never hardcode secrets; use environment variables or secure vaults
+- **Dependency Security**: Regularly check for vulnerabilities in dependencies
+- **Access Control**: Implement proper authentication and authorization patterns
+- **Error Information**: Never expose sensitive information in error messages or logs
+
+### ⚡ Performance Optimization
+- **Measure First**: Profile before optimizing; don't guess at bottlenecks
+- **Efficient Algorithms**: Choose appropriate data structures and algorithms for the scale
+- **Resource Usage**: Monitor memory leaks, connection pools, and file handles
+- **Caching Strategy**: Implement caching at appropriate levels (memory, disk, network)
+- **Async Patterns**: Use async/await properly for I/O-bound operations
+
+### 📦 Dependency Management
+- **Version Pinning**: Use specific versions for production dependencies
+- **Compatibility Checks**: Verify new dependencies don't conflict with existing ones
+- **License Compliance**: Ensure all dependencies have compatible licenses
+- **Minimal Dependencies**: Only add dependencies that provide significant value
+- **Update Strategy**: Have a plan for keeping dependencies current and secure
+
+### 🔄 Code Review Checklist
+- **Functionality**: Does the code solve the problem as specified?
+- **Readability**: Is the code clear and well-documented?
+- **Performance**: Are there obvious performance issues?
+- **Security**: Are there potential security vulnerabilities?
+- **Testing**: Are there adequate tests covering the changes?
+- **Standards**: Does the code follow project conventions and style guides?
